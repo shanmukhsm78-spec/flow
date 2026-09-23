@@ -280,7 +280,7 @@
     <h2>Join the waitlist</h2>
     <p class="cta-sub">Leave interest. We’ll write when there’s something real to try — not a launch claim.</p>
 
-    <form name="waitlist" method="POST" data-netlify="true" netlify netlify-honeypot="bot-field" action="/#thanks">
+    <form id="waitlist-form" name="waitlist" method="POST" data-netlify="true" netlify netlify-honeypot="bot-field" action="/thanks.html">
       <input type="hidden" name="form-name" value="waitlist">
       <p style="display:none">
         <label>Don’t fill this out: <input name="bot-field"></label>
@@ -292,10 +292,11 @@
       <label for="never-chatgpt">What would you never type into ChatGPT?</label>
       <textarea id="never-chatgpt" name="never_chatgpt" placeholder="Something you’d only trust on your own machine…" required></textarea>
 
-      <button type="submit">Join waitlist</button>
+      <button type="submit" id="waitlist-submit">Join waitlist</button>
     </form>
 
     <div class="thanks" id="thanks">Thanks — you’re on the list.</div>
+    <p id="waitlist-error" style="display:none;margin-top:16px;color:#ff453a;font-size:15px;"></p>
   </section>
 </main>
 
@@ -304,13 +305,38 @@
 </footer>
 
 <script>
-  if (window.location.hash === '#thanks') {
-    var el = document.getElementById('thanks');
-    if (el) {
-      el.classList.add('show');
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }
+  (function () {
+    var form = document.getElementById('waitlist-form');
+    var thanks = document.getElementById('thanks');
+    var err = document.getElementById('waitlist-error');
+    var btn = document.getElementById('waitlist-submit');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (err) { err.style.display = 'none'; err.textContent = ''; }
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+      var data = new URLSearchParams(new FormData(form)).toString();
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: data
+      }).then(function (res) {
+        if (!res.ok) throw new Error('Submit failed (' + res.status + ')');
+        form.style.display = 'none';
+        if (thanks) {
+          thanks.classList.add('show');
+          thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }).catch(function () {
+        // Bypass this listener; Netlify redirects to /thanks.html
+        HTMLFormElement.prototype.submit.call(form);
+      }).finally(function () {
+        if (btn) { btn.disabled = false; btn.textContent = 'Join waitlist'; }
+      });
+    });
+  })();
 </script>
 </body>
 </html>
