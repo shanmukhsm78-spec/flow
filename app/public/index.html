@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FLOW v0 — local chat</title>
+<title>FLOW — Official 14 Phase 1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,6 +18,7 @@
     --teal-dim: rgba(94, 234, 212, 0.12);
     --warn: #fbbf24;
     --danger: #f87171;
+    --ghost: #a78bfa;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -28,7 +29,7 @@
   }
   header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    padding: 12px 20px; border-bottom: 1px solid var(--border);
     gap: 12px; flex-wrap: wrap;
   }
   .brand { font-weight: 700; letter-spacing: -0.02em; }
@@ -38,33 +39,37 @@
     background: var(--teal-dim); border: 1px solid rgba(94,234,212,0.25);
     padding: 4px 10px; border-radius: 999px;
   }
-  .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .controls label { font-size: 12px; color: var(--muted); }
+  .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .controls label.field { font-size: 12px; color: var(--muted); }
   .controls input[type="text"] {
     background: var(--panel); border: 1px solid #2a2a2a; color: var(--text);
-    border-radius: 8px; padding: 7px 10px; font: inherit; font-size: 13px; width: 140px;
+    border-radius: 8px; padding: 7px 10px; font: inherit; font-size: 13px; width: 120px;
   }
   .controls input:focus { outline: none; border-color: var(--teal); }
   .toggle {
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
     font-size: 12px; color: var(--muted); cursor: pointer;
     user-select: none; padding: 6px 10px; border-radius: 8px;
-    border: 1px dashed #333; background: transparent;
+    border: 1px solid #2a2a2a; background: transparent;
   }
-  .toggle.on { border-color: var(--warn); color: var(--warn); background: rgba(251,191,36,0.08); }
-  .toggle input { accent-color: var(--warn); }
-  .exp { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #0a0a0a;
-    background: var(--warn); padding: 1px 6px; border-radius: 4px; }
-  button.ghost {
+  .toggle.on { border-color: var(--teal); color: var(--teal); background: var(--teal-dim); }
+  .toggle.silence.on { border-color: var(--warn); color: var(--warn); background: rgba(251,191,36,0.08); }
+  .toggle input { accent-color: var(--teal); }
+  .thin {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    color: #0a0a0a; background: var(--teal); padding: 1px 5px; border-radius: 3px;
+  }
+  .toggle.silence .thin { background: var(--warn); }
+  button.ghost-btn {
     background: transparent; border: 1px solid #2a2a2a; color: var(--muted);
     border-radius: 8px; padding: 7px 12px; font: inherit; font-size: 12px; cursor: pointer;
   }
-  button.ghost:hover { border-color: var(--teal); color: var(--text); }
+  button.ghost-btn:hover { border-color: var(--teal); color: var(--text); }
   #status {
     font-size: 12px; padding: 8px 20px; border-bottom: 1px solid var(--border);
     color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
   }
-  #status .dot { width: 7px; height: 7px; border-radius: 50%; background: #555; }
+  #status .dot { width: 7px; height: 7px; border-radius: 50%; background: #555; flex-shrink: 0; }
   #status.ok .dot { background: var(--teal); }
   #status.err .dot { background: var(--danger); }
   #status.err { color: #fca5a5; background: rgba(248,113,113,0.06); }
@@ -74,9 +79,37 @@
     border: 1px solid rgba(251,191,36,0.35); color: #fde68a; font-size: 13px;
   }
   #banner.show { display: block; }
+  #ghostPanel {
+    display: none; margin: 12px 20px 0; padding: 14px 16px;
+    border-radius: 12px; background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(167,139,250,0.35); color: #ddd6fe; font-size: 13px;
+  }
+  #ghostPanel.show { display: block; }
+  #ghostPanel h3 { font-size: 13px; color: var(--ghost); margin-bottom: 6px; }
+  #ghostPanel .actions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .layout { flex: 1; display: flex; min-height: 0; overflow: hidden; }
   main {
     flex: 1; overflow: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px;
   }
+  .side {
+    width: 300px; border-left: 1px solid var(--border); background: #0c0c0c;
+    overflow: auto; padding: 14px; display: none; flex-direction: column; gap: 12px;
+  }
+  .side.open { display: flex; }
+  .side h2 { font-size: 13px; color: var(--teal); letter-spacing: 0.04em; text-transform: uppercase; }
+  .side h3 { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+  .side .item {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px; font-size: 12px; line-height: 1.45; color: #ccc;
+  }
+  .side .item .meta { color: #666; font-size: 10px; margin-top: 6px; }
+  .side .item button {
+    margin-top: 8px; font-size: 11px; padding: 4px 8px;
+    background: transparent; border: 1px solid #333; color: var(--danger);
+    border-radius: 6px; cursor: pointer;
+  }
+  .side .empty-side { color: #555; font-size: 12px; }
+  .side .toolbar { display: flex; flex-wrap: wrap; gap: 6px; }
   .msg {
     max-width: 720px; width: 100%; margin: 0 auto;
     padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border);
@@ -87,7 +120,7 @@
   .msg .role { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
   .msg.user .role { color: var(--teal); }
   .empty {
-    margin: auto; text-align: center; color: var(--muted); max-width: 420px; font-size: 14px; line-height: 1.6;
+    margin: auto; text-align: center; color: var(--muted); max-width: 440px; font-size: 14px; line-height: 1.6;
   }
   .empty strong { color: var(--text); display: block; margin-bottom: 8px; font-size: 16px; }
   footer.composer {
@@ -108,7 +141,7 @@
   }
   button.send:disabled { opacity: 0.45; cursor: not-allowed; }
   .hint { font-size: 11px; color: #555; }
-  body.silence-dim main, body.silence-dim .composer { opacity: 0.55; filter: grayscale(0.3); }
+  body.silence-dim main, body.silence-dim .composer, body.silence-dim .side { opacity: 0.55; filter: grayscale(0.3); }
   .error-box {
     max-width: 720px; margin: 0 auto; width: 100%;
     background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.35);
@@ -124,38 +157,97 @@
     color: var(--text); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 12px;
   }
   .notes input:focus { outline: none; border-color: var(--teal); }
+  .roadmap {
+    border-top: 1px solid var(--border); padding: 10px 20px 14px;
+    font-size: 11px; color: #555; max-width: 960px; width: 100%; margin: 0 auto;
+  }
+  .roadmap strong { color: #777; font-weight: 600; }
+  .roadmap span {
+    display: inline-block; margin: 3px 4px 0 0; padding: 2px 8px;
+    border: 1px solid #222; border-radius: 999px; color: #666; background: #0e0e0e;
+    pointer-events: none; cursor: default;
+  }
+  @media (max-width: 800px) {
+    .side { width: 100%; border-left: none; border-top: 1px solid var(--border); max-height: 40vh; }
+    .layout { flex-direction: column; }
+  }
 </style>
 </head>
 <body>
 <header>
   <div style="display:flex;align-items:center;gap:10px;">
     <div class="brand">FLOW<span>.</span></div>
-    <span class="badge">v0 prototype</span>
+    <span class="badge">Official 14 · Phase 1</span>
   </div>
   <div class="controls">
-    <label for="model">Model</label>
+    <label class="field" for="model">Model</label>
     <input id="model" type="text" value="llama3.2" spellcheck="false" title="Ollama model name">
-    <label class="toggle" id="silenceLbl" title="Experimental stub — not implemented">
-      <input type="checkbox" id="silence">
-      Silence Mode <span class="exp">Experimental</span>
+    <label class="toggle" id="echoLbl" title="THIN LIVE — future-self voice grounded in notes">
+      <input type="checkbox" id="echo">
+      Echo <span class="thin">Thin</span>
     </label>
-    <button class="ghost" id="clearBtn" type="button">Clear chat</button>
+    <label class="toggle" id="witnessLbl" title="THIN LIVE — honest pushback">
+      <input type="checkbox" id="witness">
+      Witness <span class="thin">Thin</span>
+    </label>
+    <label class="toggle silence" id="silenceLbl" title="THIN LIVE — dims UI and blocks Ghost">
+      <input type="checkbox" id="silence">
+      Silence <span class="thin">Thin</span>
+    </label>
+    <button class="ghost-btn" id="memoryBtn" type="button">Show memory</button>
+    <button class="ghost-btn" id="clearBtn" type="button">Clear chat</button>
+    <button class="ghost-btn" id="simStuckBtn" type="button" title="Demo Ghost without waiting 10s">Simulate stuck</button>
   </div>
 </header>
 <div id="status"><span class="dot"></span> <span id="statusText">Checking Ollama…</span></div>
-<div id="banner">Silence Mode is experimental and not implemented yet. UI is dimmed only — no real stealth or silence behavior.</div>
-<main id="chat"></main>
+<div id="banner">Ghost muted — Silence Mode is ON. Chat still works. Ghost will not fire or write receipts.</div>
+<div id="ghostPanel">
+  <h3>Ghost · THIN LIVE</h3>
+  <p id="ghostTip">You look stuck. Pause, name the blocker in one sentence, then take the next small step.</p>
+  <p style="margin-top:6px;font-size:11px;color:#9ca3af">Receipt stays in local memory.json — never leaves this device.</p>
+  <div class="actions">
+    <button class="ghost-btn" id="askFlowBtn" type="button">Ask FLOW</button>
+    <button class="ghost-btn" id="dismissGhostBtn" type="button">Dismiss</button>
+  </div>
+</div>
+<div class="layout">
+  <main id="chat"></main>
+  <aside class="side" id="memoryPanel" aria-label="Mnemosyne memory">
+    <h2>Mnemosyne · LIVE</h2>
+    <div class="toolbar">
+      <button class="ghost-btn" id="wipeBtn" type="button">Wipe memory</button>
+      <button class="ghost-btn" id="clearNotesBtn" type="button">Clear notes</button>
+      <button class="ghost-btn" id="clearReceiptsBtn" type="button">Clear receipts</button>
+      <button class="ghost-btn" id="closeMemoryBtn" type="button">Close</button>
+    </div>
+    <h3>Notes</h3>
+    <div id="notesList" class="empty-side">No notes yet.</div>
+    <h3>Ghost receipts</h3>
+    <div id="receiptsList" class="empty-side">No receipts yet.</div>
+  </aside>
+</div>
 <footer class="composer">
   <div class="notes">
-    <input id="note" type="text" placeholder="Optional note to save in memory.json (local)">
-    <button class="ghost" id="saveNote" type="button">Save note</button>
+    <input id="note" type="text" placeholder="Optional note → Mnemosyne (local memory.json)">
+    <button class="ghost-btn" id="saveNote" type="button">Save note</button>
   </div>
   <div class="row">
     <textarea id="input" placeholder="Message FLOW (local Ollama)…" rows="2"></textarea>
     <button class="send" id="send" type="button">Send</button>
   </div>
-  <p class="hint">Chats stay on this machine via Ollama. Memory: app/data/memory.json. No FLOW cloud.</p>
+  <p class="hint">Chats + notes + Ghost receipts stay on this machine (Ollama + memory.json). No FLOW cloud brain. FLOW AI uses notes in replies — not a finished digital twin. Ghost / Echo / Witness / Silence = THIN LIVE.</p>
 </footer>
+<div class="roadmap" aria-label="Phase 2–3 roadmap">
+  <strong>Phase 2–3 · Coming</strong>
+  <span>Temporal Cognition</span>
+  <span>Time-Fold</span>
+  <span>Mirror Protocol</span>
+  <span>Soul</span>
+  <span>Causal AI</span>
+  <span>Constellation</span>
+  <span>Reflect</span>
+  <span>Life Memory</span>
+</div>
 <script>
 (function () {
   const chatEl = document.getElementById('chat');
@@ -166,18 +258,49 @@
   const statusText = document.getElementById('statusText');
   const silence = document.getElementById('silence');
   const silenceLbl = document.getElementById('silenceLbl');
+  const echo = document.getElementById('echo');
+  const echoLbl = document.getElementById('echoLbl');
+  const witness = document.getElementById('witness');
+  const witnessLbl = document.getElementById('witnessLbl');
   const banner = document.getElementById('banner');
   const clearBtn = document.getElementById('clearBtn');
   const noteInput = document.getElementById('note');
   const saveNoteBtn = document.getElementById('saveNote');
+  const memoryBtn = document.getElementById('memoryBtn');
+  const memoryPanel = document.getElementById('memoryPanel');
+  const notesList = document.getElementById('notesList');
+  const receiptsList = document.getElementById('receiptsList');
+  const wipeBtn = document.getElementById('wipeBtn');
+  const clearNotesBtn = document.getElementById('clearNotesBtn');
+  const clearReceiptsBtn = document.getElementById('clearReceiptsBtn');
+  const closeMemoryBtn = document.getElementById('closeMemoryBtn');
+  const simStuckBtn = document.getElementById('simStuckBtn');
+  const ghostPanel = document.getElementById('ghostPanel');
+  const ghostTip = document.getElementById('ghostTip');
+  const askFlowBtn = document.getElementById('askFlowBtn');
+  const dismissGhostBtn = document.getElementById('dismissGhostBtn');
 
   let busy = false;
   let memory = null;
+  let lastSent = '';
+  let stallTimer = null;
+  let ghostArmed = true;
+  const STALL_MS = 10000;
+  const DEFAULT_HELP = 'You look stuck. Pause. Name the blocker in one sentence. Then ask FLOW for the next small step — receipts stay in local memory.json only.';
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function looksErrorLike(text) {
+    const t = text.toLowerCase();
+    return /error|exception|traceback|failed|undefined is not|cannot read|typeerror|referenceerror|syntaxerror|enoent|segfault/.test(t);
+  }
 
   function renderMessages(messages) {
     chatEl.innerHTML = '';
     if (!messages || !messages.length) {
-      chatEl.innerHTML = '<div class="empty"><strong>Local chat ready</strong>Start Ollama, pick a model, then send a message. Replies come from your machine — if Ollama is down, you’ll see a real error, not a fake answer.</div>';
+      chatEl.innerHTML = '<div class="empty"><strong>Local chat ready</strong>Start Ollama, pick a model, then send a message. Mnemosyne notes feed the system prompt. Echo / Witness / Silence / Ghost are THIN LIVE — honest labels, not a finished twin.</div>';
       return;
     }
     for (const m of messages) {
@@ -208,8 +331,35 @@
     chatEl.scrollTop = chatEl.scrollHeight;
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function renderMemorySide() {
+    const notes = (memory && memory.notes) || [];
+    const receipts = ((memory && memory.ghostReceipts) || []).filter(r => !r.deleted);
+    if (!notes.length) {
+      notesList.innerHTML = '<div class="empty-side">No notes yet.</div>';
+    } else {
+      notesList.innerHTML = notes.map((n, i) => {
+        const id = n.id || ('idx-' + i);
+        return '<div class="item">' + escapeHtml(n.text || '') +
+          '<div class="meta">' + escapeHtml(n.at || '') + '</div>' +
+          '<button type="button" data-note-id="' + escapeHtml(id) + '" data-note-idx="' + i + '">Delete note</button></div>';
+      }).join('');
+      notesList.querySelectorAll('button[data-note-idx]').forEach(btn => {
+        btn.addEventListener('click', () => deleteNote(Number(btn.getAttribute('data-note-idx'))));
+      });
+    }
+    if (!receipts.length) {
+      receiptsList.innerHTML = '<div class="empty-side">No receipts yet.</div>';
+    } else {
+      receiptsList.innerHTML = receipts.map(r => {
+        return '<div class="item"><strong>' + escapeHtml(r.signal || 'stuck') + '</strong><br>' +
+          escapeHtml(r.help || '') +
+          '<div class="meta">' + escapeHtml(r.at || '') + ' · ' + escapeHtml(r.id || '') + '</div>' +
+          '<button type="button" data-receipt-id="' + escapeHtml(r.id) + '">Delete receipt</button></div>';
+      }).join('');
+      receiptsList.querySelectorAll('button[data-receipt-id]').forEach(btn => {
+        btn.addEventListener('click', () => deleteReceipt(btn.getAttribute('data-receipt-id')));
+      });
+    }
   }
 
   async function refreshHealth() {
@@ -218,10 +368,13 @@
       const j = await r.json();
       if (j.ollamaOk) {
         statusEl.className = 'ok';
-        statusText.textContent = 'Ollama reachable · model default: ' + (j.defaultModel || 'llama3.2') + ' · messages: ' + j.messageCount;
+        statusText.textContent = 'Ollama reachable · ' + (j.defaultModel || 'llama3.2') +
+          ' · msgs ' + j.messageCount + ' · notes ' + (j.noteCount || 0) +
+          ' · ghost ' + (j.ghostReceiptCount || 0);
       } else {
         statusEl.className = 'err';
-        statusText.textContent = 'Ollama not reachable at ' + (j.ollamaHost || '127.0.0.1:11434') + ' — install & run Ollama, then refresh.';
+        statusText.textContent = 'Ollama not reachable at ' + (j.ollamaHost || '127.0.0.1:11434') +
+          ' — install & run Ollama (wifi-off chat needs the model already pulled).';
       }
     } catch (e) {
       statusEl.className = 'err';
@@ -229,48 +382,172 @@
     }
   }
 
-  async function loadMemory() {
-    const r = await fetch('/api/memory');
-    memory = await r.json();
-    if (memory.settings && memory.settings.model) modelInput.value = memory.settings.model;
-    if (memory.settings && memory.settings.silenceMode) {
-      silence.checked = true;
-      applySilence(true);
-    }
-    renderMessages(memory.messages || []);
+  function applyModesFromMemory() {
+    const s = (memory && memory.settings) || {};
+    modelInput.value = s.model || 'llama3.2';
+    echo.checked = !!s.echoMode;
+    witness.checked = !!s.witnessMode;
+    silence.checked = !!s.silenceMode;
+    echoLbl.classList.toggle('on', echo.checked);
+    witnessLbl.classList.toggle('on', witness.checked);
+    applySilence(silence.checked);
   }
 
   function applySilence(on) {
     silenceLbl.classList.toggle('on', on);
     banner.classList.toggle('show', on);
     document.body.classList.toggle('silence-dim', on);
+    if (on) {
+      hideGhost();
+      clearStallTimer();
+    }
+  }
+
+  async function putSettings(partial) {
+    const r = await fetch('/api/memory', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ settings: partial })
+    });
+    memory = await r.json();
+    applyModesFromMemory();
+    renderMemorySide();
+  }
+
+  async function loadMemory() {
+    const r = await fetch('/api/memory');
+    memory = await r.json();
+    applyModesFromMemory();
+    renderMessages(memory.messages || []);
+    renderMemorySide();
+  }
+
+  function clearStallTimer() {
+    if (stallTimer) {
+      clearTimeout(stallTimer);
+      stallTimer = null;
+    }
+  }
+
+  function armStallWatcher() {
+    clearStallTimer();
+    if (silence.checked || !ghostArmed) return;
+    const text = input.value.trim();
+    if (!text) return;
+    stallTimer = setTimeout(() => {
+      if (silence.checked) return;
+      if (input.value.trim()) {
+        triggerGhost('typing-stall', DEFAULT_HELP);
+      }
+    }, STALL_MS);
+  }
+
+  async function triggerGhost(signal, help) {
+    if (silence.checked) return;
+    ghostTip.textContent = help || DEFAULT_HELP;
+    ghostPanel.classList.add('show');
+    ghostArmed = false;
+    try {
+      const r = await fetch('/api/ghost/receipt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ signal: signal || 'stuck', help: help || DEFAULT_HELP })
+      });
+      const j = await r.json();
+      if (!r.ok) {
+        if (j.silenceMode) {
+          hideGhost();
+          banner.classList.add('show');
+        }
+        return;
+      }
+      await loadMemory();
+      if (memoryPanel.classList.contains('open')) renderMemorySide();
+    } catch (e) {
+      // local tip still shown even if receipt write failed
+    }
+  }
+
+  function hideGhost() {
+    ghostPanel.classList.remove('show');
+    ghostArmed = true;
+  }
+
+  async function deleteNote(idx) {
+    const notes = ((memory && memory.notes) || []).slice();
+    if (idx < 0 || idx >= notes.length) return;
+    notes.splice(idx, 1);
+    const r = await fetch('/api/memory', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes })
+    });
+    memory = await r.json();
+    renderMemorySide();
+  }
+
+  async function deleteReceipt(id) {
+    const r = await fetch('/api/ghost/receipts/' + encodeURIComponent(id), { method: 'DELETE' });
+    if (r.ok) {
+      memory = await r.json();
+      renderMemorySide();
+      refreshHealth();
+    }
   }
 
   silence.addEventListener('change', async () => {
-    const on = silence.checked;
-    applySilence(on);
-    await fetch('/api/memory', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ settings: { silenceMode: on, model: modelInput.value.trim() || 'llama3.2' } })
-    });
+    await putSettings({ silenceMode: silence.checked, model: modelInput.value.trim() || 'llama3.2' });
   });
-
+  echo.addEventListener('change', async () => {
+    echoLbl.classList.toggle('on', echo.checked);
+    await putSettings({ echoMode: echo.checked, model: modelInput.value.trim() || 'llama3.2' });
+  });
+  witness.addEventListener('change', async () => {
+    witnessLbl.classList.toggle('on', witness.checked);
+    await putSettings({ witnessMode: witness.checked, model: modelInput.value.trim() || 'llama3.2' });
+  });
   modelInput.addEventListener('change', async () => {
-    await fetch('/api/memory', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ settings: { model: modelInput.value.trim() || 'llama3.2' } })
-    });
+    await putSettings({ model: modelInput.value.trim() || 'llama3.2' });
   });
 
   clearBtn.addEventListener('click', async () => {
-    if (!confirm('Clear chat messages from local memory.json? Notes are kept.')) return;
+    if (!confirm('Clear chat messages from local memory.json? Notes and Ghost receipts are kept.')) return;
     const r = await fetch('/api/memory/messages', { method: 'DELETE' });
     memory = await r.json();
     renderMessages(memory.messages || []);
     refreshHealth();
   });
+
+  wipeBtn.addEventListener('click', async () => {
+    if (!confirm('Wipe ALL local memory (messages, notes, Ghost receipts)? Settings reset to defaults.')) return;
+    const r = await fetch('/api/memory', { method: 'DELETE' });
+    memory = await r.json();
+    applyModesFromMemory();
+    renderMessages([]);
+    renderMemorySide();
+    refreshHealth();
+  });
+
+  clearNotesBtn.addEventListener('click', async () => {
+    if (!confirm('Clear all Mnemosyne notes?')) return;
+    const r = await fetch('/api/memory/notes', { method: 'DELETE' });
+    memory = await r.json();
+    renderMemorySide();
+  });
+
+  clearReceiptsBtn.addEventListener('click', async () => {
+    if (!confirm('Clear all Ghost receipts from local memory.json?')) return;
+    const r = await fetch('/api/ghost/receipts', { method: 'DELETE' });
+    memory = await r.json();
+    renderMemorySide();
+    refreshHealth();
+  });
+
+  memoryBtn.addEventListener('click', () => {
+    memoryPanel.classList.toggle('open');
+    renderMemorySide();
+  });
+  closeMemoryBtn.addEventListener('click', () => memoryPanel.classList.remove('open'));
 
   saveNoteBtn.addEventListener('click', async () => {
     const text = noteInput.value.trim();
@@ -282,18 +559,53 @@
     });
     memory = await r.json();
     noteInput.value = '';
-    alert('Note saved to local memory.json (' + (memory.notes || []).length + ' notes).');
+    renderMemorySide();
+    memoryPanel.classList.add('open');
+  });
+
+  simStuckBtn.addEventListener('click', () => {
+    if (silence.checked) {
+      banner.classList.add('show');
+      hideGhost();
+      return;
+    }
+    triggerGhost('simulate-stuck', DEFAULT_HELP);
+  });
+
+  dismissGhostBtn.addEventListener('click', hideGhost);
+  askFlowBtn.addEventListener('click', () => {
+    hideGhost();
+    input.value = 'I seem stuck. Using my local notes, suggest one small next step — keep it honest and short.';
+    send();
+  });
+
+  input.addEventListener('input', () => {
+    ghostArmed = true;
+    armStallWatcher();
   });
 
   async function send() {
     if (busy) return;
     const message = input.value.trim();
     if (!message) return;
+    clearStallTimer();
+
+    const dup = lastSent && message === lastSent;
+    const errish = looksErrorLike(message);
+    // Stuck signal: same string twice in a row (typical pasted / error-like loops)
+    if (!silence.checked && dup) {
+      const tip = errish
+        ? 'Same error-like message sent twice. Ghost tip: paste the error once, then ask FLOW what to try next.'
+        : 'Same message sent twice. Ghost tip: restate the goal in one line, or ask FLOW to reframe.';
+      triggerGhost('repeat-send', tip);
+    }
+
     busy = true;
     sendBtn.disabled = true;
     const optimistic = (memory && memory.messages) ? memory.messages.slice() : [];
     optimistic.push({ role: 'user', content: message });
     renderMessages(optimistic);
+    lastSent = message;
     input.value = '';
 
     try {
@@ -315,7 +627,11 @@
         await loadMemory();
       }
     } catch (e) {
-      showError({ error: 'Request failed', detail: String(e.message || e), hints: ['Is the FLOW server still running?', 'Check http://127.0.0.1:8787/api/health'] });
+      showError({
+        error: 'Request failed',
+        detail: String(e.message || e),
+        hints: ['Is the FLOW server still running?', 'Check http://127.0.0.1:8787/api/health']
+      });
     } finally {
       busy = false;
       sendBtn.disabled = false;

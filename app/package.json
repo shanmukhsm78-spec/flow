@@ -1,7 +1,7 @@
 {
-  "name": "flow-v0",
-  "version": "0.1.0",
-  "description": "FLOW v0 — privacy-first on-device chat prototype (local Ollama + memory.json)",
+  "name": "flow-official-14",
+  "version": "0.2.0",
+  "description": "FLOW Official 14 Phase 1 — on-device chat (Ollama + memory.json)",
   "private": true,
   "main": "server.js",
   "scripts": {

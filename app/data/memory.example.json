@@ -3,7 +3,9 @@
   "updatedAt": "2026-09-23T00:00:00.000Z",
   "settings": {
     "model": "llama3.2",
-    "silenceMode": false
+    "silenceMode": false,
+    "echoMode": false,
+    "witnessMode": false
   },
   "messages": [
     {
@@ -13,15 +15,25 @@
     },
     {
       "role": "assistant",
-      "content": "Hi — I'm running on your machine via Ollama.",
+      "content": "Hi — I'm running on your machine via Ollama, using Mnemosyne notes as light context.",
       "at": "2026-09-23T00:00:02.000Z",
       "model": "llama3.2"
     }
   ],
   "notes": [
     {
+      "id": "example-note-1",
       "text": "Example note saved across sessions",
       "at": "2026-09-23T00:00:03.000Z"
+    }
+  ],
+  "ghostReceipts": [
+    {
+      "id": "example-receipt-1",
+      "at": "2026-09-23T00:00:04.000Z",
+      "signal": "simulate-stuck",
+      "help": "Pause. Name the blocker in one sentence. Then ask FLOW for the next small step.",
+      "deleted": false
     }
   ]
 }

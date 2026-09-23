@@ -1,6 +1,10 @@
-# FLOW app v0
+# FLOW app — Official 14 Phase 1
 
-Local chat UI + Node server (stdlib only). Talks to Ollama; saves `data/memory.json`.
+Local chat UI + Node server (stdlib only, zero npm deps). Talks to Ollama; saves `data/memory.json`.
+
+**LIVE:** FLOW AI, Mnemosyne  
+**THIN LIVE:** Ghost, Silence, Echo, Witness  
+**Coming:** Phase 2–3 roadmap names (see root FEATURES.md)
 
 ```bash
 # Prerequisite: ollama serve && ollama pull llama3.2
@@ -8,6 +12,4 @@ npm start
 # open http://127.0.0.1:8787
 ```
 
-Silence Mode is **Experimental** and a **stub** — not implemented.
-
-See the [root README](../README.md) for full Mac setup and landing deploy notes.
+Brain / chats / Ghost receipts stay on-device. See [FEATURES.md](../FEATURES.md) and [PROOF.md](../PROOF.md).

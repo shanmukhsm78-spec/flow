@@ -1,45 +1,52 @@
-# FLOW features — claim gate
+# FLOW Official 14 — claim gate
 
-**Source of truth for what we may say is LIVE.**  
-If it is not listed LIVE (or THIN LIVE) here, do not pitch it as shipped on the page, in social, or in interviews.
+**Source of truth for what we may say is LIVE / THIN LIVE / STUB / Coming.**  
+If it is not listed here, do not pitch it as shipped on the page, in social, or in interviews.
 
 Last updated: 2026-09-23 · Commit gate owner: Forge · Audit gate: Bench via Anchor
 
----
+**Product law:** Brain / chats / Mnemosyne / Ghost receipts are **not** on a FLOW server. Local only via Ollama + `app/data/memory.json`.
 
-## Phase 1 (now)
-
-| Name | Status | What is real today | Must not claim |
-|------|--------|--------------------|----------------|
-| **FLOW AI** | **LIVE** | Local chat UI → Ollama proxy → model on the machine. No FLOW cloud chat ownership. | “Digital twin,” finished product, cloud-hosted FLOW model |
-| **Mnemosyne** | **THIN LIVE** | `app/data/memory.json` persists messages + notes; GET `/api/memory`; clear chat via DELETE `/api/memory/messages`; notes appendable in UI | Long-term semantic memory, “remembers everything,” cross-device sync |
-| **Ghost** | **STUB / sci-fi** | Not implemented. Page may say building toward / not shipped only. | Wifi-off stealth, invisible mode, on-device receipt as shipped |
-| **Silence Mode** | **STUB** | UI toggle dims the app + banner only. No real silence / stealth behavior. | Real silence, stealth, or privacy mode beyond UI chrome |
-| **Echo** | **Coming** (Phase 2–3) | Not built. | Any live Echo capability |
-| **Witness** | **Coming** (Phase 2–3) | Not built. | Any live Witness capability |
-
-Phase 1 is **not** six LIVE features. Pitch only what this table marks LIVE or THIN LIVE.
+No “world’s first,” no “beats GPT,” no finished “digital twin.”
 
 ---
 
-## Phase 2–3
+## Official 14
 
-Label **Coming** only. No LIVE claims. No timelines as promises.
+| Name | Status | File path | How to demo | Must not claim |
+|------|--------|-----------|-------------|----------------|
+| **FLOW AI** | **LIVE** | `app/server.js`, `app/public/index.html` | `cd app && npm start` → open `http://127.0.0.1:8787` → send a chat (Ollama running). Replies inject Mnemosyne notes + Echo/Witness style into the system prompt. | Finished digital twin; cloud-hosted FLOW model; beats GPT |
+| **Mnemosyne** | **LIVE** | `app/data/memory.json`, `app/server.js` | Show memory panel → notes + Ghost receipts; Save note; Delete note; Clear chat; Wipe memory. APIs: GET `/api/memory`, PUT settings/notes, DELETE messages/notes/all. | Cross-device sync; “remembers everything”; semantic long-term memory |
+| **Ghost** | **THIN LIVE** | `app/public/index.html`, `app/server.js` | Silence off → **Simulate stuck** (or typing stall ≥10s / same string sent twice) → Ghost panel + tip → optional Ask FLOW → receipt in Show memory → delete receipt. Receipt path: local `ghostReceipts` only. | Full wifi-off stealth bar proven; invisible mode; cloud Ghost |
+| **Silence Mode** | **THIN LIVE** | `app/public/index.html`, settings in memory.json | Toggle Silence ON → UI dims + banner “Ghost muted” → Simulate stuck → **no** Ghost / no receipt. Chat still works. | Full stealth / privacy OS; more than dim + Ghost block |
+| **Echo** | **THIN LIVE** | settings `echoMode` → system prompt in `server.js` | Toggle Echo → chat; model asked to answer as future-self grounded in notes. | Finished Echo product; full life simulation |
+| **Witness** | **THIN LIVE** | settings `witnessMode` → system prompt in `server.js` | Toggle Witness → chat; model asked to push back when useful. | Finished Witness product; always-right critic |
+| **Temporal Cognition** | **Coming** | — | Roadmap label only (not clickable). | Any live capability |
+| **Time-Fold** | **Coming** | — | Roadmap label only. | Any live capability |
+| **Mirror Protocol** | **Coming** | — | Roadmap label only. | Any live capability |
+| **Soul** | **Coming** | — | Roadmap label only. | Any live capability |
+| **Causal AI** | **Coming** | — | Roadmap label only. | Any live capability |
+| **Constellation** | **Coming** | — | Roadmap label only. | Any live capability |
+| **Reflect** | **Coming** | — | Roadmap label only. | Any live capability |
+| **Life Memory** | **Coming** | — | Roadmap label only. | Any live capability |
+
+Phase 1 ships **6** features at LIVE or THIN LIVE. Phase 2–3 are **Coming** only — no fake working buttons.
 
 ---
 
-## Bench regrade triggers
+## Honesty notes
 
-Mark **Ghost** or **Mnemosyne** as **LIVE** in this file **only** when the matching proof exists:
-
-- **Ghost LIVE:** wifi-off behavior + on-device receipt (Bench 12‑mo proof bar)
-- **Mnemosyne LIVE** (beyond thin): stronger than file show/clear — only after product + Bench agree
-
-Until then: Ghost stays STUB; Mnemosyne stays THIN LIVE at most.
+- **Wifi-off chat:** needs local Ollama already installed and the model already pulled. FLOW does not download weights for you offline.
+- **Ghost receipts:** written only to `app/data/memory.json` → `ghostReceipts`. Never leave the device. Architecture is local-only; do **not** mark Ghost as full wifi-off **proven** beyond that until Bench’s demo bar is met.
+- **FLOW AI** answers using local memory context. It is **not** a finished digital twin.
 
 ---
 
-## 12‑month proof Bench locked
+## Bench regrade note
+
+Full **Ghost** bar still wants **wifi-off demo proof** (Bench 12‑mo): Ghost works with wifi off + on-device receipt + memory delete. Until that proof is recorded, keep Ghost at **THIN LIVE** (stuck signal + help + receipt + Silence respect). Do not upgrade to full LIVE in this file without that proof.
+
+12‑month proof Bench locked:
 
 1. Ghost works with wifi off  
 2. On-device receipt  
@@ -55,5 +62,8 @@ cd app && npm start
 # Ollama at 127.0.0.1:11434 · memory at app/data/memory.json
 ```
 
+Health includes feature flags: `GET /api/health` → `features`.
+
 Landing: https://flowprivate.netlify.app  
-Repo: https://github.com/shanmukhsm78-spec/flow
+Repo: https://github.com/shanmukhsm78-spec/flow  
+Proof script: [PROOF.md](./PROOF.md)
