@@ -1,0 +1,64 @@
+=== FLOW wifi-off proof ===
+at: 2026-09-23T13:05:09+05:30
+wifi status:
+Wi-Fi Power (en0): Off
+public net (expect fail):
+example.com=000
+example.com=fail_ok
+ollama local:
+models ['llama3.2:latest', 'llama3.2:3b']
+starting FLOW server...
+{
+    "ok": true,
+    "app": "flow-official-14-phase-1",
+    "ollamaHost": "http://127.0.0.1:11434",
+    "ollamaOk": true,
+    "ollamaError": null,
+    "defaultModel": "llama3.2",
+    "messageCount": 3,
+    "noteCount": 0,
+    "ghostReceiptCount": 1,
+    "settings": {
+        "silenceMode": false,
+        "echoMode": false,
+        "witnessMode": false
+    },
+    "features": {
+        "flowAi": "LIVE",
+        "mnemosyne": "LIVE",
+        "ghost": "THIN LIVE",
+        "silenceMode": "THIN LIVE",
+        "echo": "THIN LIVE",
+        "witness": "THIN LIVE",
+        "temporalCognition": "Coming",
+        "timeFold": "Coming",
+        "mirrorProtocol": "Coming",
+        "soul": "Coming",
+        "causalAi": "Coming",
+        "constellation": "Coming",
+        "reflect": "Coming",
+        "lifeMemory": "Coming"
+    },
+    "memoryPath": "app/data/memory.json",
+    "localOnly": true
+}
+{
+    "receipt": {
+        "id": "424b8baf-696a-4e33-a410-bcbad0fb0a7a",
+        "at": "2026-09-23T07:35:11.195Z",
+        "signal": "wifi-off-proof",
+        "help": "local tip while offline",
+        "deleted": false
+    },
+    "silenceMode": false,
+    "localOnly": true
+}
+chat_ok True err None
+Use wired Ethernet instead.
+receipts_after 1
+messages cleared
+silence_block_http=403
+{"error":"Ghost muted","detail":"Silence Mode is ON — Ghost is blocked. Turn Silence off to record a receipt.","silenceMode":true}
+=== PASS if: wifi Off, public fail, ollama models listed, ghost receipt+delete ok, chat reply ok, silence 403 ===
+log: /Users/nemani/flow/PROOF-wifi-off-20260923-130509.log
+Then turn Wi-Fi back ON and tell Forge the log path.
