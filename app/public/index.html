@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLOW v0 — local chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #111;
+    --border: #1f1f1f;
+    --text: #f5f5f5;
+    --muted: #888;
+    --teal: #5eead4;
+    --teal-dim: rgba(94, 234, 212, 0.12);
+    --warn: #fbbf24;
+    --danger: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--text);
+    height: 100vh; display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    gap: 12px; flex-wrap: wrap;
+  }
+  .brand { font-weight: 700; letter-spacing: -0.02em; }
+  .brand span { color: var(--teal); }
+  .badge {
+    font-size: 11px; font-weight: 600; color: var(--teal);
+    background: var(--teal-dim); border: 1px solid rgba(94,234,212,0.25);
+    padding: 4px 10px; border-radius: 999px;
+  }
+  .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .controls label { font-size: 12px; color: var(--muted); }
+  .controls input[type="text"] {
+    background: var(--panel); border: 1px solid #2a2a2a; color: var(--text);
+    border-radius: 8px; padding: 7px 10px; font: inherit; font-size: 13px; width: 140px;
+  }
+  .controls input:focus { outline: none; border-color: var(--teal); }
+  .toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--muted); cursor: pointer;
+    user-select: none; padding: 6px 10px; border-radius: 8px;
+    border: 1px dashed #333; background: transparent;
+  }
+  .toggle.on { border-color: var(--warn); color: var(--warn); background: rgba(251,191,36,0.08); }
+  .toggle input { accent-color: var(--warn); }
+  .exp { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #0a0a0a;
+    background: var(--warn); padding: 1px 6px; border-radius: 4px; }
+  button.ghost {
+    background: transparent; border: 1px solid #2a2a2a; color: var(--muted);
+    border-radius: 8px; padding: 7px 12px; font: inherit; font-size: 12px; cursor: pointer;
+  }
+  button.ghost:hover { border-color: var(--teal); color: var(--text); }
+  #status {
+    font-size: 12px; padding: 8px 20px; border-bottom: 1px solid var(--border);
+    color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  #status .dot { width: 7px; height: 7px; border-radius: 50%; background: #555; }
+  #status.ok .dot { background: var(--teal); }
+  #status.err .dot { background: var(--danger); }
+  #status.err { color: #fca5a5; background: rgba(248,113,113,0.06); }
+  #banner {
+    display: none; margin: 12px 20px 0; padding: 12px 14px;
+    border-radius: 10px; background: rgba(251,191,36,0.1);
+    border: 1px solid rgba(251,191,36,0.35); color: #fde68a; font-size: 13px;
+  }
+  #banner.show { display: block; }
+  main {
+    flex: 1; overflow: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .msg {
+    max-width: 720px; width: 100%; margin: 0 auto;
+    padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border);
+    background: var(--panel); white-space: pre-wrap; word-break: break-word;
+    font-size: 14px; line-height: 1.55;
+  }
+  .msg.user { border-color: rgba(94,234,212,0.25); background: rgba(94,234,212,0.06); }
+  .msg .role { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .msg.user .role { color: var(--teal); }
+  .empty {
+    margin: auto; text-align: center; color: var(--muted); max-width: 420px; font-size: 14px; line-height: 1.6;
+  }
+  .empty strong { color: var(--text); display: block; margin-bottom: 8px; font-size: 16px; }
+  footer.composer {
+    border-top: 1px solid var(--border); padding: 14px 20px 18px;
+    display: flex; flex-direction: column; gap: 8px; max-width: 760px; width: 100%; margin: 0 auto;
+  }
+  .row { display: flex; gap: 10px; }
+  textarea {
+    flex: 1; min-height: 52px; max-height: 160px; resize: vertical;
+    background: var(--panel); border: 1px solid #2a2a2a; border-radius: 12px;
+    color: var(--text); font: inherit; font-size: 14px; padding: 12px 14px; outline: none;
+  }
+  textarea:focus { border-color: var(--teal); }
+  button.send {
+    background: var(--teal); color: #0a0a0a; border: none; border-radius: 12px;
+    padding: 0 18px; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer;
+    min-width: 88px;
+  }
+  button.send:disabled { opacity: 0.45; cursor: not-allowed; }
+  .hint { font-size: 11px; color: #555; }
+  body.silence-dim main, body.silence-dim .composer { opacity: 0.55; filter: grayscale(0.3); }
+  .error-box {
+    max-width: 720px; margin: 0 auto; width: 100%;
+    background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.35);
+    color: #fecaca; border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.5;
+  }
+  .error-box ul { margin: 8px 0 0 18px; }
+  .notes {
+    max-width: 720px; margin: 0 auto 4px; width: 100%;
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .notes input {
+    flex: 1; min-width: 180px; background: var(--panel); border: 1px solid #2a2a2a;
+    color: var(--text); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 12px;
+  }
+  .notes input:focus { outline: none; border-color: var(--teal); }
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="brand">FLOW<span>.</span></div>
+    <span class="badge">v0 prototype</span>
+  </div>
+  <div class="controls">
+    <label for="model">Model</label>
+    <input id="model" type="text" value="llama3.2" spellcheck="false" title="Ollama model name">
+    <label class="toggle" id="silenceLbl" title="Experimental stub — not implemented">
+      <input type="checkbox" id="silence">
+      Silence Mode <span class="exp">Experimental</span>
+    </label>
+    <button class="ghost" id="clearBtn" type="button">Clear chat</button>
+  </div>
+</header>
+<div id="status"><span class="dot"></span> <span id="statusText">Checking Ollama…</span></div>
+<div id="banner">Silence Mode is experimental and not implemented yet. UI is dimmed only — no real stealth or silence behavior.</div>
+<main id="chat"></main>
+<footer class="composer">
+  <div class="notes">
+    <input id="note" type="text" placeholder="Optional note to save in memory.json (local)">
+    <button class="ghost" id="saveNote" type="button">Save note</button>
+  </div>
+  <div class="row">
+    <textarea id="input" placeholder="Message FLOW (local Ollama)…" rows="2"></textarea>
+    <button class="send" id="send" type="button">Send</button>
+  </div>
+  <p class="hint">Chats stay on this machine via Ollama. Memory: app/data/memory.json. No FLOW cloud.</p>
+</footer>
+<script>
+(function () {
+  const chatEl = document.getElementById('chat');
+  const input = document.getElementById('input');
+  const sendBtn = document.getElementById('send');
+  const modelInput = document.getElementById('model');
+  const statusEl = document.getElementById('status');
+  const statusText = document.getElementById('statusText');
+  const silence = document.getElementById('silence');
+  const silenceLbl = document.getElementById('silenceLbl');
+  const banner = document.getElementById('banner');
+  const clearBtn = document.getElementById('clearBtn');
+  const noteInput = document.getElementById('note');
+  const saveNoteBtn = document.getElementById('saveNote');
+
+  let busy = false;
+  let memory = null;
+
+  function renderMessages(messages) {
+    chatEl.innerHTML = '';
+    if (!messages || !messages.length) {
+      chatEl.innerHTML = '<div class="empty"><strong>Local chat ready</strong>Start Ollama, pick a model, then send a message. Replies come from your machine — if Ollama is down, you’ll see a real error, not a fake answer.</div>';
+      return;
+    }
+    for (const m of messages) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + (m.role === 'user' ? 'user' : 'assistant');
+      const role = document.createElement('div');
+      role.className = 'role';
+      role.textContent = m.role === 'user' ? 'You' : ('FLOW' + (m.model ? ' · ' + m.model : ''));
+      const body = document.createElement('div');
+      body.textContent = m.content;
+      div.appendChild(role);
+      div.appendChild(body);
+      chatEl.appendChild(div);
+    }
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  function showError(payload) {
+    const box = document.createElement('div');
+    box.className = 'error-box';
+    let html = '<strong>' + escapeHtml(payload.error || 'Error') + '</strong>';
+    if (payload.detail) html += '<div style="margin-top:6px;opacity:.9">' + escapeHtml(String(payload.detail)) + '</div>';
+    if (payload.hints && payload.hints.length) {
+      html += '<ul>' + payload.hints.map(h => '<li>' + escapeHtml(h) + '</li>').join('') + '</ul>';
+    }
+    box.innerHTML = html;
+    chatEl.appendChild(box);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  async function refreshHealth() {
+    try {
+      const r = await fetch('/api/health');
+      const j = await r.json();
+      if (j.ollamaOk) {
+        statusEl.className = 'ok';
+        statusText.textContent = 'Ollama reachable · model default: ' + (j.defaultModel || 'llama3.2') + ' · messages: ' + j.messageCount;
+      } else {
+        statusEl.className = 'err';
+        statusText.textContent = 'Ollama not reachable at ' + (j.ollamaHost || '127.0.0.1:11434') + ' — install & run Ollama, then refresh.';
+      }
+    } catch (e) {
+      statusEl.className = 'err';
+      statusText.textContent = 'Cannot reach FLOW server.';
+    }
+  }
+
+  async function loadMemory() {
+    const r = await fetch('/api/memory');
+    memory = await r.json();
+    if (memory.settings && memory.settings.model) modelInput.value = memory.settings.model;
+    if (memory.settings && memory.settings.silenceMode) {
+      silence.checked = true;
+      applySilence(true);
+    }
+    renderMessages(memory.messages || []);
+  }
+
+  function applySilence(on) {
+    silenceLbl.classList.toggle('on', on);
+    banner.classList.toggle('show', on);
+    document.body.classList.toggle('silence-dim', on);
+  }
+
+  silence.addEventListener('change', async () => {
+    const on = silence.checked;
+    applySilence(on);
+    await fetch('/api/memory', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ settings: { silenceMode: on, model: modelInput.value.trim() || 'llama3.2' } })
+    });
+  });
+
+  modelInput.addEventListener('change', async () => {
+    await fetch('/api/memory', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ settings: { model: modelInput.value.trim() || 'llama3.2' } })
+    });
+  });
+
+  clearBtn.addEventListener('click', async () => {
+    if (!confirm('Clear chat messages from local memory.json? Notes are kept.')) return;
+    const r = await fetch('/api/memory/messages', { method: 'DELETE' });
+    memory = await r.json();
+    renderMessages(memory.messages || []);
+    refreshHealth();
+  });
+
+  saveNoteBtn.addEventListener('click', async () => {
+    const text = noteInput.value.trim();
+    if (!text) return;
+    const r = await fetch('/api/memory', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appendNote: text })
+    });
+    memory = await r.json();
+    noteInput.value = '';
+    alert('Note saved to local memory.json (' + (memory.notes || []).length + ' notes).');
+  });
+
+  async function send() {
+    if (busy) return;
+    const message = input.value.trim();
+    if (!message) return;
+    busy = true;
+    sendBtn.disabled = true;
+    const optimistic = (memory && memory.messages) ? memory.messages.slice() : [];
+    optimistic.push({ role: 'user', content: message });
+    renderMessages(optimistic);
+    input.value = '';
+
+    try {
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          model: modelInput.value.trim() || 'llama3.2',
+          note: noteInput.value.trim() || undefined
+        })
+      });
+      const j = await r.json();
+      if (!r.ok) {
+        showError(j);
+        await loadMemory();
+      } else {
+        noteInput.value = '';
+        await loadMemory();
+      }
+    } catch (e) {
+      showError({ error: 'Request failed', detail: String(e.message || e), hints: ['Is the FLOW server still running?', 'Check http://127.0.0.1:8787/api/health'] });
+    } finally {
+      busy = false;
+      sendBtn.disabled = false;
+      refreshHealth();
+      input.focus();
+    }
+  }
+
+  sendBtn.addEventListener('click', send);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  });
+
+  loadMemory().then(refreshHealth).catch((e) => {
+    statusEl.className = 'err';
+    statusText.textContent = 'Failed to load memory: ' + e.message;
+  });
+  setInterval(refreshHealth, 15000);
+})();
+</script>
+</body>
+</html>

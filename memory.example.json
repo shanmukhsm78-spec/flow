@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-23T00:00:00.000Z",
+  "settings": {
+    "model": "llama3.2",
+    "silenceMode": false
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello from local FLOW",
+      "at": "2026-09-23T00:00:01.000Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Hi — I'm running on your machine via Ollama.",
+      "at": "2026-09-23T00:00:02.000Z",
+      "model": "llama3.2"
+    }
+  ],
+  "notes": [
+    {
+      "text": "Example note saved across sessions",
+      "at": "2026-09-23T00:00:03.000Z"
+    }
+  ]
+}

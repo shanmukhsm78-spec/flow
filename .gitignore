@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Local runtime memory (keep example)
+app/data/memory.json
+**/memory.json
+!memory.example.json
+!**/memory.example.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Netlify / logs
+.netlify/
+*.log
+npm-debug.log*
+
+# Python (if used later)
+__pycache__/
+.venv/
+venv/

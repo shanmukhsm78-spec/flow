@@ -1,0 +1,13 @@
+# FLOW landing — publish static site from /landing
+# Keep custom domain / site URL: https://flowprivate.netlify.app
+
+[build]
+  publish = "landing"
+  # No build command — static HTML
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
