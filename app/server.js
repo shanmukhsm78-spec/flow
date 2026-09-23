@@ -26,7 +26,7 @@ const MEMORY_PATH = path.join(DATA_DIR, 'memory.json');
 const FEATURE_FLAGS = {
   flowAi: 'LIVE',
   mnemosyne: 'LIVE',
-  ghost: 'THIN LIVE',
+  ghost: 'LIVE',
   silenceMode: 'THIN LIVE',
   echo: 'THIN LIVE',
   witness: 'THIN LIVE',

@@ -199,7 +199,7 @@
 <div id="status"><span class="dot"></span> <span id="statusText">Checking Ollama…</span></div>
 <div id="banner">Ghost muted — Silence Mode is ON. Chat still works. Ghost will not fire or write receipts.</div>
 <div id="ghostPanel">
-  <h3>Ghost · THIN LIVE</h3>
+  <h3>Ghost · LIVE</h3>
   <p id="ghostTip">You look stuck. Pause, name the blocker in one sentence, then take the next small step.</p>
   <p style="margin-top:6px;font-size:11px;color:#9ca3af">Receipt stays in local memory.json — never leaves this device.</p>
   <div class="actions">
@@ -232,7 +232,7 @@
     <textarea id="input" placeholder="Message FLOW (local Ollama)…" rows="2"></textarea>
     <button class="send" id="send" type="button">Send</button>
   </div>
-  <p class="hint">Chats + notes + Ghost receipts stay on this machine (Ollama + memory.json). No FLOW cloud brain. FLOW AI uses notes in replies — not a finished digital twin. Ghost / Echo / Witness / Silence = THIN LIVE.</p>
+  <p class="hint">Chats + notes + Ghost receipts stay on this machine (Ollama + memory.json). No FLOW cloud brain. FLOW AI uses notes in replies — not a finished digital twin. Ghost = LIVE (wifi-off proven). Echo / Witness / Silence = THIN LIVE.</p>
 </footer>
 <div class="roadmap" aria-label="Phase 2–3 roadmap">
   <strong>Phase 2–3 · Coming</strong>
@@ -297,7 +297,7 @@
   function renderMessages(messages) {
     chatEl.innerHTML = '';
     if (!messages || !messages.length) {
-      chatEl.innerHTML = '<div class="empty"><strong>Local chat ready</strong>Start Ollama, pick a model, then send a message. Mnemosyne notes feed the system prompt. Echo / Witness / Silence / Ghost are THIN LIVE — honest labels, not a finished twin.</div>';
+      chatEl.innerHTML = '<div class="empty"><strong>Local chat ready</strong>Start Ollama, pick a model, then send a message. Mnemosyne notes feed the system prompt. Ghost is LIVE (wifi-off proven). Echo / Witness / Silence are THIN LIVE — not a finished twin.</div>';
       return;
     }
     for (const m of messages) {
