@@ -67,4 +67,17 @@ Optional: typing stall (≥10s text in composer without send) or send the same p
 - World’s first / beats GPT  
 - Finished digital twin  
 - Ghost full wifi-off proven (beyond local-only receipt path)  
-- Phase 2–3 names as shipped  
+- Phase 2–3 names as shipped
+
+## Wifi-off proof (Bench bar) — run on the Mac yourself
+
+Remote agents **cannot** turn Wi-Fi off for you: it drops the Mac link.
+
+1. Start Ollama + FLOW while online: `ollama serve` · `cd app && npm start`
+2. Turn **Wi-Fi Off** in Control Center
+3. In Terminal: `bash scripts/wifi-off-proof.sh`
+4. Confirm log shows: wifi Off, public net fail, Ollama ok, Ghost receipt+delete, chat reply, Silence 403
+5. Turn **Wi-Fi On**, paste the log path to Forge
+
+Until that log exists, Ghost stays **THIN LIVE** in FEATURES.md (not full LIVE).
+
