@@ -14,7 +14,7 @@ Landing (keep URL): [https://flowprivate.netlify.app](https://flowprivate.netlif
 
 ### Built (v0)
 
-- Honest static landing page with Netlify Forms waitlist (`landing/`)
+- Apple-quiet five-screen landing + Netlify Forms waitlist (`landing/`) — name, email, ChatGPT question
 - Local chat UI + tiny Node server (`app/`) — **zero npm dependencies**
 - Proxy to local Ollama at `http://127.0.0.1:11434` (`/api/chat`)
 - Persist messages + notes to `app/data/memory.json`

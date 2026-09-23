@@ -4,305 +4,236 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FLOW</title>
-<meta name="description" content="FLOW is a privacy-first on-device AI prototype. Model and memory stay on your device. Built in public by a solo student founder.">
+<meta name="description" content="FLOW — early on-device AI prototype. Model and memory on your machine.">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    height: 100%;
+  }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Helvetica, Arial, sans-serif;
-    background: #000;
-    color: #f5f5f7;
-    line-height: 1.47059;
-    font-weight: 400;
-    letter-spacing: -0.022em;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #050505;
+    color: #f2f2f2;
+    height: 100%;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
   a { color: inherit; text-decoration: none; }
-  .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
 
   nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 20;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
-    max-width: 980px;
-    margin: 0 auto;
-    padding-left: 24px;
-    padding-right: 24px;
+    padding: 18px 28px;
+    mix-blend-mode: difference;
   }
   .logo {
-    font-size: 21px;
+    font-size: 15px;
     font-weight: 600;
-    letter-spacing: -0.03em;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
   .nav-cta {
-    font-size: 14px;
-    font-weight: 400;
-    color: #2997ff;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.85;
   }
-  .nav-cta:hover { text-decoration: underline; }
+  .nav-cta:hover { opacity: 1; }
 
-  .hero {
+  .screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 120px 0 96px;
+    padding: 88px 28px 64px;
+    position: relative;
   }
-  .eyebrow {
-    font-size: 17px;
-    font-weight: 600;
-    color: #86868b;
-    margin-bottom: 12px;
-    letter-spacing: -0.01em;
-  }
-  h1 {
-    font-size: clamp(40px, 8vw, 64px);
-    font-weight: 600;
-    letter-spacing: -0.025em;
+
+  .line {
+    font-size: clamp(36px, 7.2vw, 72px);
+    font-weight: 500;
+    letter-spacing: -0.045em;
     line-height: 1.05;
-    margin-bottom: 20px;
+    max-width: 14ch;
   }
-  .hero-sub {
-    font-size: clamp(19px, 2.5vw, 24px);
+  .line.wide { max-width: 18ch; }
+  .one {
+    margin-top: 28px;
+    font-size: clamp(16px, 2.1vw, 20px);
     font-weight: 400;
-    color: #86868b;
-    max-width: 540px;
-    margin: 0 auto 28px;
-    line-height: 1.333;
+    color: #8a8a8a;
+    letter-spacing: -0.015em;
+    line-height: 1.35;
+    max-width: 28ch;
   }
-  .stage {
-    display: inline-block;
+  .tag {
+    margin-top: 20px;
     font-size: 12px;
     font-weight: 500;
-    color: #86868b;
-    border: 1px solid #424245;
-    border-radius: 980px;
-    padding: 6px 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5c5c5c;
   }
 
-  section.block {
-    padding: 72px 0;
-    border-top: 1px solid #1d1d1f;
+  .screen-waitlist {
+    justify-content: flex-start;
+    padding-top: 110px;
+    padding-bottom: 80px;
   }
-  .block h2 {
-    font-size: clamp(28px, 4vw, 40px);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 24px;
-    text-align: center;
-  }
-  .block p {
-    font-size: 19px;
-    color: #a1a1a6;
-    max-width: 580px;
-    margin: 0 auto 16px;
-    text-align: center;
-    line-height: 1.42;
-  }
-  .block p strong { color: #f5f5f7; font-weight: 600; }
-
-  .split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-    max-width: 640px;
-    margin: 40px auto 0;
-  }
-  .split h3 {
-    font-size: 17px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: #f5f5f7;
-  }
-  .split ul {
-    list-style: none;
-  }
-  .split li {
-    font-size: 15px;
-    color: #a1a1a6;
-    padding: 8px 0;
-    border-bottom: 1px solid #1d1d1f;
-    line-height: 1.4;
-  }
-  .split li:last-child { border-bottom: none; }
-  .is .mark { color: #30d158; }
-  .isnt .mark { color: #86868b; }
-
-  .story p {
-    text-align: left;
-  }
-  .story .byline {
-    margin-top: 28px;
-    font-size: 15px;
-    color: #86868b;
-    text-align: left;
-    max-width: 580px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .cta {
-    text-align: center;
-    padding: 96px 0 120px;
-    border-top: 1px solid #1d1d1f;
-  }
-  .cta h2 {
-    font-size: clamp(28px, 4vw, 40px);
-    font-weight: 600;
-    letter-spacing: -0.02em;
+  .screen-waitlist .line {
+    max-width: 12ch;
     margin-bottom: 12px;
   }
-  .cta-sub {
-    font-size: 17px;
-    color: #86868b;
-    margin-bottom: 36px;
+  .screen-waitlist .one {
+    margin-top: 0;
+    margin-bottom: 40px;
   }
+
   form {
-    max-width: 420px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 400px;
     text-align: left;
   }
   label {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
-    color: #86868b;
-    margin-bottom: 6px;
-    margin-top: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6e6e6e;
+    margin: 18px 0 8px;
   }
-  input[type="email"],
-  textarea {
+  input, textarea {
     width: 100%;
-    padding: 14px 16px;
-    background: #1d1d1f;
-    border: 1px solid #424245;
-    border-radius: 12px;
-    color: #f5f5f7;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #2a2a2a;
+    border-radius: 0;
+    color: #f2f2f2;
     font-size: 17px;
     font-family: inherit;
+    padding: 10px 0;
     outline: none;
     transition: border-color 0.15s;
   }
-  textarea { min-height: 100px; resize: vertical; }
-  input:focus, textarea:focus { border-color: #2997ff; }
-  input::placeholder, textarea::placeholder { color: #6e6e73; }
+  textarea { min-height: 88px; resize: vertical; }
+  input:focus, textarea:focus { border-bottom-color: #f2f2f2; }
+  input::placeholder, textarea::placeholder { color: #3f3f3f; }
   button {
-    margin-top: 20px;
+    margin-top: 36px;
     width: 100%;
-    padding: 14px 22px;
-    background: #2997ff;
-    color: #fff;
+    padding: 16px 20px;
+    background: #f2f2f2;
+    color: #050505;
     border: none;
-    border-radius: 980px;
-    font-size: 17px;
-    font-weight: 500;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    transition: background 0.15s;
+    letter-spacing: -0.01em;
   }
-  button:hover { background: #147ce5; }
+  button:hover { background: #fff; }
+  button:disabled { opacity: 0.55; cursor: default; }
   .thanks {
     display: none;
-    margin-top: 28px;
-    font-size: 17px;
-    color: #30d158;
+    margin-top: 36px;
+    font-size: 18px;
+    color: #f2f2f2;
+    letter-spacing: -0.02em;
   }
   .thanks.show { display: block; }
-
-  footer {
-    padding: 40px 0 56px;
-    text-align: center;
-    border-top: 1px solid #1d1d1f;
+  .err {
+    display: none;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #ff6259;
   }
-  footer p {
-    font-size: 12px;
-    color: #6e6e73;
+
+  footer.tiny {
+    position: absolute;
+    bottom: 28px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 11px;
+    color: #3f3f3f;
+    letter-spacing: 0.04em;
   }
 
   @media (max-width: 640px) {
-    .hero { padding: 80px 0 64px; }
-    .split { grid-template-columns: 1fr; gap: 28px; }
-    section.block { padding: 56px 0; }
-    .cta { padding: 72px 0 88px; }
-    .story p, .story .byline { text-align: center; }
+    nav { padding: 16px 20px; }
+    .screen { padding: 96px 22px 56px; }
+    .screen-waitlist { padding-top: 96px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; scroll-snap-type: none; }
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">FLOW</div>
-  <a class="nav-cta" href="#waitlist">Join waitlist</a>
+  <div class="logo">Flow</div>
+  <a class="nav-cta" href="#waitlist">Waitlist</a>
 </nav>
 
-<main>
-  <section class="hero wrap">
-    <p class="eyebrow">You think. The world adjusts.</p>
-    <h1>AI that stays<br>on your device.</h1>
-    <p class="hero-sub">A privacy-first prototype. Model and memory stay with you — this app does not own your chats in the cloud.</p>
-    <span class="stage">Idea · early prototype</span>
-  </section>
+<section class="screen" id="idea" aria-label="Idea">
+  <h1 class="line">You think.<br>The world adjusts.</h1>
+  <p class="one">FLOW is an early on-device AI prototype.</p>
+</section>
 
-  <section class="block wrap">
-    <h2>What this is</h2>
-    <p>FLOW is being built so students and founders can think with AI without handing every thought to someone else’s servers.</p>
-    <p>Today that means a <strong>local prototype</strong>: chat through a model you run on your machine, with memory saved as a file you control. Ambition is larger. The product is not finished.</p>
+<section class="screen" id="device" aria-label="On device">
+  <p class="line wide">Model and memory stay on your machine.</p>
+</section>
 
-    <div class="split">
-      <div class="is">
-        <h3><span class="mark">●</span> Building toward</h3>
-        <ul>
-          <li>Privacy-first, on-device AI</li>
-          <li>Local chat + local memory</li>
-          <li>No cloud ownership of your chats by FLOW</li>
-          <li>Honest shipping, in public</li>
-        </ul>
-      </div>
-      <div class="isnt">
-        <h3><span class="mark">○</span> Not claiming</h3>
-        <ul>
-          <li>A finished product</li>
-          <li>User counts or traction</li>
-          <li>Features that are not local yet</li>
-          <li>That a waitlist equals proof</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+<section class="screen" id="who" aria-label="Who it is for">
+  <p class="line">For students and founders.</p>
+  <p class="one">Built in public by a solo student in India.</p>
+</section>
 
-  <section class="block story wrap">
-    <h2>Why it exists</h2>
-    <p>I’m Shanmukh — a solo student founder in India. I’m building FLOW in public for people like me: students and founders who want useful AI without giving up the private parts of how they think.</p>
-    <p>The bet is simple. If the model and the memory stay on your device, the product can be useful without owning your conversations.</p>
-    <p class="byline">Global English. One person. One idea at a time.</p>
-  </section>
+<section class="screen" id="ghost" aria-label="Ghost lite">
+  <p class="line wide">Ghost-lite / Silence Mode</p>
+  <p class="one">Building toward. Not shipped.</p>
+  <p class="tag">Experimental</p>
+</section>
 
-  <section class="cta wrap" id="waitlist">
-    <h2>Join the waitlist</h2>
-    <p class="cta-sub">Leave interest. We’ll write when there’s something real to try — not a launch claim.</p>
+<section class="screen screen-waitlist" id="waitlist" aria-label="Waitlist">
+  <h2 class="line">Waitlist</h2>
+  <p class="one">Interest only. Not a launch.</p>
 
-    <form id="waitlist-form" name="waitlist" method="POST" data-netlify="true" netlify netlify-honeypot="bot-field" action="/thanks.html">
-      <input type="hidden" name="form-name" value="waitlist">
-      <p style="display:none">
-        <label>Don’t fill this out: <input name="bot-field"></label>
-      </p>
+  <form id="waitlist-form" name="waitlist" method="POST" data-netlify="true" netlify netlify-honeypot="bot-field" action="/thanks.html">
+    <input type="hidden" name="form-name" value="waitlist">
+    <p style="display:none">
+      <label>Don’t fill this out: <input name="bot-field"></label>
+    </p>
 
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" placeholder="Your name" required autocomplete="name">
 
-      <label for="never-chatgpt">What would you never type into ChatGPT?</label>
-      <textarea id="never-chatgpt" name="never_chatgpt" placeholder="Something you’d only trust on your own machine…" required></textarea>
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
 
-      <button type="submit" id="waitlist-submit">Join waitlist</button>
-    </form>
+    <label for="never-chatgpt">What would you never type into ChatGPT?</label>
+    <textarea id="never-chatgpt" name="never_chatgpt" placeholder="Something you’d only trust on your own machine…" required></textarea>
 
-    <div class="thanks" id="thanks">Thanks — you’re on the list.</div>
-    <p id="waitlist-error" style="display:none;margin-top:16px;color:#ff453a;font-size:15px;"></p>
-  </section>
-</main>
+    <button type="submit" id="waitlist-submit">Join waitlist</button>
+  </form>
 
-<footer>
-  <p>FLOW · Honesty over hype · Built in public</p>
-</footer>
+  <div class="thanks" id="thanks">You’re on the list.</div>
+  <p class="err" id="waitlist-error"></p>
+  <p class="tiny" style="position:static;margin-top:48px;">Early prototype · Local chat via Ollama · memory.json</p>
+</section>
 
 <script>
   (function () {
@@ -325,12 +256,8 @@
       }).then(function (res) {
         if (!res.ok) throw new Error('Submit failed (' + res.status + ')');
         form.style.display = 'none';
-        if (thanks) {
-          thanks.classList.add('show');
-          thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        if (thanks) thanks.classList.add('show');
       }).catch(function () {
-        // Bypass this listener; Netlify redirects to /thanks.html
         HTMLFormElement.prototype.submit.call(form);
       }).finally(function () {
         if (btn) { btn.disabled = false; btn.textContent = 'Join waitlist'; }
