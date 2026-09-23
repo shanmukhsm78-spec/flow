@@ -10,6 +10,10 @@ Landing (keep URL): [https://flowprivate.netlify.app](https://flowprivate.netlif
 
 ---
 
+## Claim gate
+
+**[FEATURES.md](./FEATURES.md)** is the only source of truth for LIVE / STUB / Coming. Do not pitch Phase 1 as six LIVE features.
+
 ## What’s built vs not built
 
 ### Built (v0)

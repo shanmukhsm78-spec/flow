@@ -157,6 +157,27 @@
     border-bottom: 1px solid #3a3a3a;
   }
   .run a:hover { border-bottom-color: #f2f2f2; }
+  .phase {
+    list-style: none;
+    margin-top: 36px;
+    text-align: left;
+    width: min(420px, 100%);
+    font-size: 13px;
+    color: #8a8a8a;
+    letter-spacing: -0.01em;
+    line-height: 1.55;
+  }
+  .phase li {
+    padding: 8px 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .phase li:last-child { border-bottom: none; }
+  .phase span {
+    display: inline-block;
+    min-width: 9.5em;
+    color: #f2f2f2;
+    font-weight: 500;
+  }
 
   .screen-waitlist {
     justify-content: flex-start;
@@ -311,6 +332,12 @@
     then open <code>http://127.0.0.1:8787</code><br>
     <a href="https://github.com/shanmukhsm78-spec/flow">github.com/shanmukhsm78-spec/flow</a>
   </p>
+  <ul class="phase" aria-label="Phase 1 status">
+    <li><span>FLOW AI</span> LIVE — local Ollama chat</li>
+    <li><span>Mnemosyne</span> THIN LIVE — memory.json show / clear</li>
+    <li><span>Ghost / Silence</span> STUB — not shipped</li>
+    <li><span>Echo / Witness</span> Coming — Phase 2–3</li>
+  </ul>
 </section>
 
 <section class="screen screen-waitlist" id="waitlist" aria-label="Waitlist">
@@ -339,8 +366,8 @@
   <p class="err" id="waitlist-error"></p>
 
   <aside class="ghost-strip" aria-label="Ghost lite note">
-    <h3>Ghost-lite / Silence Mode</h3>
-    <p>Building toward. Not shipped. Experimental stub only.</p>
+    <h3>Ghost / Silence — STUB</h3>
+    <p>Phase 1 sci-fi. Not LIVE. See FEATURES.md.</p>
   </aside>
 </section>
 
